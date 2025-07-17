@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Card Suffix Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    #output {
+      margin-top: 20px;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow-y: scroll;
+      background: #f9f9f9;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Card Suffix Generator</h1>
+    <input type="text" id="baseInput" placeholder="Enter base number (e.g. 5115168508556103|09|2027|)" />
+    <input type="number" id="startSuffix" placeholder="Start suffix (e.g. 0)" min="0" max="999" />
+    <input type="number" id="endSuffix" placeholder="End suffix (e.g. 999)" min="0" max="999" />
+    <button onclick="generate()">Generate + Download</button>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    function pad(num) {
+      return num.toString().padStart(3, '0');
+    }
+
+    function generate() {
+      const base = document.getElementById("baseInput").value.trim();
+      const start = parseInt(document.getElementById("startSuffix").value);
+      const end = parseInt(document.getElementById("endSuffix").value);
+      const outputDiv = document.getElementById("output");
+
+      if (!base  isNaN(start)  isNaN(end)  start > end  start < 0 || end > 999) {
+        outputDiv.innerText = "⚠️ Please enter valid base and suffix range (000 to 999).";
+        return;
+      }
+
+      let result = "";
+      for (let i = start; i <= end; i++) {
+        result += base + pad(i) + "\n";
+      }
+
+      outputDiv.innerText = result;
+
+      // Create and download the file
+      const blob = new Blob([result], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "card_list_" + pad(start) + "_" + pad(end) + ".txt";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
